@@ -55,3 +55,12 @@ update REQUEST_URL https://api.slack.com/apps/A01PHET4R1B/event-subscriptions? w
     1. keystone authentication with API TOKEN
 1. Openshift
 1. AWS EC2
+
+### Links
+
+* https://api.slack.com/start/overview
+* https://api.slack.com/start/planning
+* https://api.slack.com/start/building
+* https://api.slack.com/start/building/bolt-python
+* https://slack.dev/bolt-python/tutorial/getting-started
+* https://api.slack.com/tutorials/tags/python
