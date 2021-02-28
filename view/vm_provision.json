@@ -1,0 +1,84 @@
+{
+  "type": "modal",
+  "callback_id": "modal_vm",
+  "title": {
+    "type": "plain_text",
+    "text": "Openstack VM launcher"
+  },
+  "submit": {
+    "type": "plain_text",
+    "text": "Provision"
+  },
+  "close": {
+    "type": "plain_text",
+    "text": "Cancel"
+  },
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "plain_text",
+        "text": "Provision a virtual machine to Openstack. The name will be concatenated automatically as slack_userid-os_nvr-vm_name"
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "vm",
+      "element": {
+        "type": "plain_text_input",
+        "action_id": "name",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "name of your virtual machine"
+        }
+      },
+      "label": {
+        "type": "plain_text",
+        "text": "Name"
+      },
+      "hint": {
+        "type": "plain_text",
+        "text": "short name, no spaces and special characters"
+      }
+    },
+    {
+      "type": "section",
+      "block_id": "os",
+      "text": {
+        "type": "mrkdwn",
+        "text": "Select OS NVR"
+      },
+      "accessory": {
+        "type": "static_select",
+        "placeholder": {
+          "type": "plain_text",
+          "text": "Select an item"
+        },
+        "options": [
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "RHEL-6.10"
+            },
+            "value": "RHEL-6.10"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "RHEL-7.9"
+            },
+            "value": "RHEL-7.9"
+          },
+          {
+            "text": {
+              "type": "plain_text",
+              "text": "RHEL-8.0"
+            },
+            "value": "RHEL-8.0"
+          }
+        ],
+        "action_id": "nvr"
+      }
+    }
+  ]
+}
