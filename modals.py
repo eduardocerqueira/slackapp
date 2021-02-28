@@ -12,7 +12,7 @@ def log_request(logger, body, next):
     return next()
 
 
-@app.command("/vm")
+@app.command("/vm-provision")
 def open_modal(body, ack, client, logger):
     ack()
     res = client.views_open(
@@ -34,6 +34,13 @@ def open_modal(body, ack, client, logger):
             },
             "blocks": [
                 {
+                    "type": "section",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Provision a virtual machine to Openstack. The name will be concatenated automatically as slack_userid-os_nvr-vm_name",
+                    }
+                },
+                {
                     "type": "input",
                     "block_id": "vm",
                     "element": {
@@ -41,16 +48,16 @@ def open_modal(body, ack, client, logger):
                         "action_id": "name",
                         "placeholder": {
                             "type": "plain_text",
-                            "text": "kerberos_username-vm_name"
+                            "text": "name of your virtual machine"
                         }
                     },
                     "label": {
                         "type": "plain_text",
-                        "text": "vm name"
+                        "text": "Name"
                     },
                     "hint": {
                         "type": "plain_text",
-                        "text": "no spaces and special chars (.,*) suggestion: kerberos_username-vm_name"
+                        "text": "short name, no spaces and special characters"
                     }
                 },
                 {
@@ -58,7 +65,7 @@ def open_modal(body, ack, client, logger):
                     "block_id": "os",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "Select RHEL version"
+                        "text": "Select OS NVR"
                     },
                     "accessory": {
                         "type": "static_select",
@@ -104,7 +111,8 @@ def handle_submission(ack, body, client, view, logger):
     logger.info(body["view"]["state"]["values"])
     vm_name = view["state"]["values"]["vm"]["name"]["value"]
     os_nvr = view["state"]["values"]["os"]["nvr"]["selected_option"]["value"]
-    user = body["user"]["id"]
+    user_id = body["user"]["id"]
+    user_name = body["user"]["username"]
     # Validate the inputs
     errors = {}
     if vm_name is None:
@@ -117,36 +125,87 @@ def handle_submission(ack, body, client, view, logger):
     # Do whatever you want with the input data - here we're saving it to a DB
     # then sending the user a verification of their submission
 
-    # Message to send user
-    msg = ""
-    try:
-        # Save to DB
-        msg = f"Your submission of provisioning {vm_name} for {os_nvr} was successful"
-    except Exception as e:
-        # Handle error
-        msg = "There was an error with your submission"
-    finally:
-        # Message the user
-        client.chat_postMessage(channel=user, text=msg)
+    osp_vm_name = f"{user_name}-{os_nvr}-{vm_name}".lower()
 
     # Message to send user
     msg = ""
     try:
         # Save to DB
+        msg = f"Your request to provision `{osp_vm_name}` in Openstack was sent successfully \n" \
+              f"it can take a few minutes :hourglass_flowing_sand: please wait and I will let you know when it is ready!"
+    except Exception as e:
+        msg = f":x: There was an error in sending your request to provision {osp_vm_name} to Openstack"
+    finally:
+        client.chat_postMessage(channel=user_id, text=msg)
+
+    # Message to send user
+    msg = ""
+    try:
+        # Save to DB
+        # OpenstackSDK
         import time
-        time.sleep(30)
-        msg = f":white_check_mark: {vm_name} running {os_nvr} provisioned!"
+        time.sleep(10)
+        msg = f":white_check_mark: `{osp_vm_name}` was provisioned! \n" \
+              f"you can access: \n" \
+              f"```\n" \
+              f"sshpass -p redhat ssh root@192.168.1.1 \n" \
+              f"```"
     except Exception as e:
         # Handle error
-        msg = "There was an error with your submission"
+        msg = f":x: There was an error while working in your request to provision {osp_vm_name} to Openstack \n" \
+              f":pray: try it again later"
     finally:
         # Message the user
-        client.chat_postMessage(channel=user, text=msg)
+        client.chat_postMessage(channel=user_id, text=msg)
 
 
 @app.action("nvr")
 def rhel_selected(ack):
     ack()
+
+
+@app.command("/vm-list")
+def vm_list(body, ack, client):
+    ack()
+
+    user_id = body["user_id"]
+    user_name = body["user_name"]
+
+    # call OpenstackSDK and get a list of vm which contains user_id in vm name
+    # format and return list or error
+
+    # Message to send user
+    msg = ""
+    try:
+        msg = f"{user_name}-vm1, {user_name}-vm2, {user_name}-vm3"
+    except Exception as e:
+        msg = f":x: There was an error in retrieving your vm(s) from Openstack \n" \
+              f":pray: try it again later"
+    finally:
+        client.chat_postMessage(channel=user_id, text=msg)
+
+
+@app.command("/vm-delete")
+def vm_list(body, ack, client):
+    ack()
+
+    user_id = body["user_id"]
+    user_name = body["user_name"]
+    vm_name = body["text"]
+
+    # call OpenstackSDK and get a list of vm which contains user_id in vm name
+    # check vm_name is in the list
+    # delete or error
+
+    # Message to send user
+    msg = ""
+    try:
+        msg = f"{user_name}-vm1, {user_name}-vm2, {user_name}-vm3"
+    except Exception as e:
+        msg = f":x: There was an error in retrieving your vm(s) from Openstack \n" \
+              f":pray: try it again later"
+    finally:
+        client.chat_postMessage(channel=user_id, text=msg)
 
 
 if __name__ == "__main__":

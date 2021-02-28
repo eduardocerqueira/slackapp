@@ -45,7 +45,12 @@ Request URL = https://ebe0e3965fcf.ngrok.io/slack/events
 ```
 * [slash commands](https://api.slack.com/apps/A01PHET4R1B/slash-commands?)
 ```
-Command = /test
+Name           Description
+/test          test elf is working
+/vm-provision  launch a VM in Openstack
+/vm-list       List vm(s) provisioned by your user
+/vm-delete     Delete vm
+
 Request URL = https://ebe0e3965fcf.ngrok.io/slack/events
 ```
 * [interactive messages](https://api.slack.com/apps/A01PHET4R1B/interactive-messages?)
@@ -58,15 +63,23 @@ Request URL = https://ebe0e3965fcf.ngrok.io/slack/events
 #### basic app
 
 1. integrate ngrok as part of the app https://pypi.org/project/pyngrok/ and https://pyngrok.readthedocs.io/en/latest/
-1.
+1. commands
+```
+   /vm help
+   /vm list
+   /vm create
+   /vm delete
+```
 
 #### refactoring
 
 1. re-build with OO
 1. providers must be extendable
 1. authentication
-1. database ( analytical, history, reports )
+1. database ( analytical, history, reports, statistic )
 1. containerized
+1. deploy script
+1. tests and CI/CD
 
 #### providers
 
@@ -83,3 +96,5 @@ Request URL = https://ebe0e3965fcf.ngrok.io/slack/events
 * https://slack.dev/bolt-python/tutorial/getting-started
 * https://api.slack.com/tutorials/tags/python
 * https://api.slack.com/block-kit/building
+* https://api.slack.com/
+* https://slack.dev/bolt-python/concepts

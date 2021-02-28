@@ -1,1 +1,4 @@
 slack_bolt
+python-novaclient
+python-glanceclient
+pytest
