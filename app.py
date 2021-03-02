@@ -55,6 +55,41 @@ def repeat_text(ack, say):
     say(f"elf is working!")
 
 
+@app.command("/vm")
+def repeat_text(ack, say, body, client):
+    ack()
+    print(type(body))
+    print(body)
+    print(body.get('token'))
+
+    if "text" in body:
+        say("text")
+
+    if body.get('token') is not None:
+        say("no text")
+
+    if "provision" in body["text"]:
+        say("provisioning...")
+
+        with open('view/vm_provision.json') as f:
+            data = json.load(f)
+
+        res = client.views_open(
+            trigger_id=body["trigger_id"],
+            view=json.dumps(data)
+        )
+
+    if "list" in body["text"]:
+        say("listing...")
+
+    if "help" in body["text"]:
+        help = f"```" \
+               f"/vm provision" \
+               f"/vm list" \
+               f" ```"
+        say(f"{help}")
+
+
 @app.event("app_home_opened")
 def update_home_tab(client, event, logger):
     try:

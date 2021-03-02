@@ -98,3 +98,4 @@ Request URL = https://ebe0e3965fcf.ngrok.io/slack/events
 * https://api.slack.com/block-kit/building
 * https://api.slack.com/
 * https://slack.dev/bolt-python/concepts
+* https://github.com/slackapi/python-slack-events-api
